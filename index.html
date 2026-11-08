@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLORISS Eyewear - Cửa Hàng Kính Mắt Chính Hãng & Hệ Thống Quản Trị Kho</title>
+    <title>GLORISS Eyewear - Cửa Hàng Kính Mắt & Hệ Thống Quản Trị Kho SQL</title>
     <!-- Bootstrap 5 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -112,7 +112,7 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold small text-danger">Số lượng tồn kho *</label>
                                 <input type="number" id="editProdStock" class="form-control" min="0" required>
-                                <small class="text-muted">Kho hiện tại để bán</small>
+                                <small class="text-muted">Kho hàng sẵn có</small>
                             </div>
                         </div>
 
@@ -128,7 +128,7 @@
                         </div>
 
                         <div class="alert alert-info py-2 px-3 small mb-3">
-                            <i class="bi bi-database me-1"></i> <strong>Hệ thống SQL:</strong> Thao tác này sẽ tự động sinh lệnh <code>UPDATE products SET stock=?, price=?, sale_price=? WHERE id=?</code>
+                            <i class="bi bi-database me-1"></i> <strong>Hệ thống SQL:</strong> Lệnh tự động kích hoạt: <code>UPDATE products SET stock=?, price=?, sale_price=? WHERE id=?</code>
                         </div>
 
                         <div class="d-flex justify-content-end gap-2">
@@ -178,39 +178,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // DỮ LIỆU ĐỊA CHÍNH VIỆT NAM (CHUẨN HÓA 3 CẤP ĐỂ ĐẢM BẢO ĐÚNG ĐỊA CHỈ & TRÁNH NHẬP RÁC)
-        const VN_ADDRESS_DATA = {
-            "Thành phố Hà Nội": {
-                "Quận Cầu Giấy": ["Phường Dịch Vọng", "Phường Dịch Vọng Hậu", "Phường Mai Dịch", "Phường Nghĩa Đô", "Phường Nghĩa Tân", "Phường Quan Hoa", "Phường Trung Hòa", "Phường Yên Hòa"],
-                "Quận Hoàn Kiếm": ["Phường Hàng Bạc", "Phường Hàng Đào", "Phường Hàng Gai", "Phường Tràng Tiền", "Phường Cửa Nam", "Phường Lý Thái Tổ"],
-                "Quận Ba Đình": ["Phường Kim Mã", "Phường Liễu Giai", "Phường Quán Thánh", "Phường Đội Cấn", "Phường Điện Biên"],
-                "Quận Đống Đa": ["Phường Ô Chợ Dừa", "Phường Láng Hạ", "Phường Láng Thượng", "Phường Nam Đồng", "Phường Văn Miếu"],
-                "Quận Bắc Từ Liêm": ["Phường Minh Khai", "Phường Cổ Nhuế 1", "Phường Cổ Nhuế 2", "Phường Phúc Diễn", "Phường Xuân Đỉnh"],
-                "Quận Nam Từ Liêm": ["Phường Mỹ Đình 1", "Phường Mỹ Đình 2", "Phường Mễ Trì", "Phường Tây Mỗ", "Phường Trung Văn"],
-                "Quận Hà Đông": ["Phường Mộ Lao", "Phường Vạn Phúc", "Phường Hà Cầu", "Phường Quang Trung", "Phường Kiến Hưng"]
-            },
-            "Thành phố Hồ Chí Minh": {
-                "Quận 1": ["Phường Bến Nghé", "Phường Bến Thành", "Phường Đa Kao", "Phường Tân Định", "Phường Phạm Ngũ Lão"],
-                "Quận 3": ["Phường Võ Thị Sáu", "Phường 1", "Phường 2", "Phường 3", "Phường 4"],
-                "Thành phố Thủ Đức": ["Phường Thảo Điền", "Phường An Phú", "Phường Linh Trung", "Phường Hiệp Phú", "Phường Tam Bình"],
-                "Quận Bình Thạnh": ["Phường 1", "Phường 2", "Phường 15", "Phường 25", "Phường 26"],
-                "Quận Tân Bình": ["Phường 2", "Phường 4", "Phường 12", "Phường 13", "Phường 15"]
-            },
-            "Thành phố Đà Nẵng": {
-                "Quận Hải Châu": ["Phường Hải Châu I", "Phường Hải Châu II", "Phường Thạch Thang", "Phường Hòa Cường Bắc"],
-                "Quận Sơn Trà": ["Phường An Hải Bắc", "Phường An Hải Đông", "Phường Phước Mỹ", "Phường Nại Hiên Đông"],
-                "Quận Thanh Khê": ["Phường Vĩnh Trung", "Phường Tân Chính", "Phường Chính Gián"]
-            },
-            "Thành phố Hải Phòng": {
-                "Quận Hồng Bàng": ["Phường Minh Khai", "Phường Hoàng Văn Thụ", "Phường Phan Bội Châu"],
-                "Quận Ngô Quyền": ["Phường Cầu Đất", "Phường Lạch Tray", "Phường Máy Chai"]
-            },
-            "Thành phố Cần Thơ": {
-                "Quận Ninh Kiều": ["Phường Tân An", "Phường An Cư", "Phường An Khánh", "Phường Xuân Khánh"],
-                "Quận Cái Răng": ["Phường Lê Bình", "Phường Hưng Phú", "Phường Ba Láng"]
-            }
-        };
-
         // BẢNG VOUCHER ĐA CẤP (PHÂN LOẠI THEO GIÁ TRỊ VÀ SẢN PHẨM CAO CẤP / PHỔ THÔNG)
         const AVAILABLE_COUPONS = {
             'KINH10': { 
@@ -231,7 +198,7 @@
                 minProductPrice: 0, 
                 tier: 'standard', 
                 applicableIds: null,
-                desc: 'Đơn từ 400k (kính phổ thông hoặc cao cấp)'
+                desc: 'Đơn từ 400.000đ'
             },
             'GIAM50K': { 
                 type: 'fixed', 
@@ -251,7 +218,7 @@
                 minProductPrice: 0, 
                 tier: 'all', 
                 applicableIds: null,
-                desc: 'Áp dụng đơn từ 500.000đ'
+                desc: 'Đơn từ 500.000đ'
             },
             'VIP150K': { 
                 type: 'fixed', 
@@ -261,7 +228,7 @@
                 minProductPrice: 1000000, 
                 tier: 'premium', 
                 applicableIds: null,
-                desc: 'Chỉ áp dụng khi đơn có kính cao cấp từ 1.000.000đ trở lên'
+                desc: 'Chỉ áp dụng khi đơn có kính từ 1.000.000đ trở lên'
             },
             'VIP250K': { 
                 type: 'fixed', 
@@ -271,17 +238,17 @@
                 minProductPrice: 1250000, 
                 tier: 'luxury', 
                 applicableIds: null,
-                desc: 'Chỉ áp dụng cho mẫu kính thượng hạng từ 1.250.000đ trở lên'
+                desc: 'Chỉ áp dụng khi đơn có kính từ 1.250.000đ trở lên'
             },
             'TITAN200': { 
                 type: 'fixed', 
                 value: 200000, 
-                label: 'Giảm 200.000đ cho Titanium (#8, #24)', 
+                label: 'Giảm 200.000đ riêng mẫu Titanium (#8, #24)', 
                 minOrder: 0, 
                 minProductPrice: 0, 
                 tier: 'special', 
                 applicableIds: [8, 24],
-                desc: 'Chỉ áp dụng riêng cho mẫu gọng Titanium siêu nhẹ (#8 và #24)'
+                desc: 'Chỉ áp dụng cho mẫu Titanium #8 và #24'
             }
         };
 
@@ -381,10 +348,7 @@
                     customer: 'Nguyễn Văn An',
                     email: 'customer@gmail.com',
                     phone: '0912345678',
-                    province: 'Thành phố Hà Nội',
-                    district: 'Quận Hoàn Kiếm',
-                    ward: 'Phường Hàng Gai',
-                    address: 'Số 10 Phố Huế, Phường Hàng Gai, Quận Hoàn Kiếm, Thành phố Hà Nội',
+                    address: 'Số 10 Phố Huế, Phường Hàng Gai, Quận Hoàn Kiếm, Hà Nội',
                     total: 820000,
                     paymentMethod: 'COD',
                     couponApplied: 'KINH10',
@@ -418,7 +382,7 @@
         }
 
         function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
         function saveData() {
@@ -871,47 +835,32 @@
             if (modal) modal.hide();
         }
 
-        // ================= XỬ LÝ ĐẶT HÀNG, ĐỊA CHỈ & CHỐNG SPAM =================
-        function handleProvinceChange(e) {
-            const province = e.target.value;
-            const districtSelect = document.getElementById('districtSelect');
-            const wardSelect = document.getElementById('wardSelect');
-
-            districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
-            wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
-            wardSelect.disabled = true;
-
-            if (province && VN_ADDRESS_DATA[province]) {
-                districtSelect.disabled = false;
-                Object.keys(VN_ADDRESS_DATA[province]).forEach(dist => {
-                    const opt = document.createElement('option');
-                    opt.value = dist;
-                    opt.textContent = dist;
-                    districtSelect.appendChild(opt);
-                });
-            } else {
-                districtSelect.disabled = true;
+        // ================= KIỂM TRA ĐỊA CHỈ TỰ NHẬP & CHỐNG SPAM =================
+        function validateManualAddress(addr) {
+            const clean = addr.trim();
+            // 1. Kiểm tra độ dài tối thiểu (phải đủ thông tin chi tiết)
+            if (clean.length < 12) {
+                return { valid: false, message: 'Địa chỉ quá ngắn (tối thiểu 12 ký tự). Vui lòng nhập chi tiết số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố!' };
             }
-        }
 
-        function handleDistrictChange(e) {
-            const province = document.getElementById('provinceSelect').value;
-            const district = e.target.value;
-            const wardSelect = document.getElementById('wardSelect');
-
-            wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
-
-            if (province && district && VN_ADDRESS_DATA[province][district]) {
-                wardSelect.disabled = false;
-                VN_ADDRESS_DATA[province][district].forEach(w => {
-                    const opt = document.createElement('option');
-                    opt.value = w;
-                    opt.textContent = w;
-                    wardSelect.appendChild(opt);
-                });
-            } else {
-                wardSelect.disabled = true;
+            // 2. Kiểm tra chuỗi spam phím (VD: aaaaaa, 111111, asdfghjk)
+            const repeatedCharPattern = /(.){4,}/;
+            if (repeatedCharPattern.test(clean)) {
+                return { valid: false, message: 'Địa chỉ chứa chuỗi ký tự lặp lại bất thường! Vui lòng nhập địa chỉ nhận hàng có thật.' };
             }
+
+            // 3. Kiểm tra số lượng từ (phải có ít nhất 3 từ cấu thành địa chỉ thực)
+            const words = clean.split(/\s+/).filter(w => w.length > 0);
+            if (words.length < 3) {
+                return { valid: false, message: 'Vui lòng nhập rõ ràng địa chỉ bao gồm đầy đủ số nhà, đường, phường/xã và tỉnh/thành!' };
+            }
+
+            // 4. Kiểm tra có toàn số hoặc toàn ký tự đặc biệt hay không
+            if (/^[\d\s.,\-\/#]+$/.test(clean)) {
+                return { valid: false, message: 'Địa chỉ không thể chỉ gồm số và ký hiệu! Vui lòng nhập rõ tên đường, phường, quận và tỉnh/thành.' };
+            }
+
+            return { valid: true, cleanAddress: clean };
         }
 
         function handleCheckout(e) {
@@ -938,27 +887,19 @@
             const phone = form.phone.value.trim();
             const phoneRegex = /^(03|05|07|08|09)\d{8}$/;
             if (!phoneRegex.test(phone)) {
-                showAlert('Số điện thoại không đúng chuẩn (phải gồm 10 số, bắt đầu bằng 03, 05, 07, 08, 09)!', 'danger');
+                showAlert('Số điện thoại không đúng chuẩn (phải gồm 10 số di động Việt Nam bắt đầu bằng 03, 05, 07, 08, 09)!', 'danger');
                 return;
             }
 
-            // 4. KIỂM TRA CHÍNH XÁC ĐỊA CHỈ HÀNH CHÍNH 3 CẤP
-            const province = form.province.value;
-            const district = form.district.value;
-            const ward = form.ward.value;
-            const streetAddress = form.street_address.value.trim();
-
-            if (!province || !district || !ward) {
-                showAlert('Vui lòng chọn đầy đủ Tỉnh/Thành phố, Quận/Huyện và Phường/Xã để bưu tá giao hàng chính xác!', 'danger');
+            // 4. KIỂM TRA ĐỊA CHỈ KHÁCH HÀNG TỰ NHẬP
+            const rawAddress = form.address.value;
+            const addressCheck = validateManualAddress(rawAddress);
+            if (!addressCheck.valid) {
+                showAlert(addressCheck.message, 'danger');
+                form.address.focus();
                 return;
             }
-
-            if (streetAddress.length < 5) {
-                showAlert('Vui lòng nhập địa chỉ cụ thể chi tiết hơn (số nhà, ngõ/ngách, tên đường)!', 'danger');
-                return;
-            }
-
-            const fullAddress = `${streetAddress}, ${ward}, ${district}, ${province}`;
+            const fullAddress = addressCheck.cleanAddress;
 
             // 5. KIỂM TRA TỒN KHO TRƯỚC KHI TẠO ĐƠN
             for (const c of state.cart) {
@@ -980,9 +921,6 @@
                 customer: form.fullname.value.trim(),
                 email: form.email ? form.email.value.trim() : (state.currentUser ? state.currentUser.email : ''),
                 phone: phone,
-                province: province,
-                district: district,
-                ward: ward,
                 address: fullAddress,
                 note: form.note.value.trim(),
                 total: total,
@@ -1002,7 +940,7 @@
             // GHI LỊCH SỬ SQL TRANSACTION
             logSQL(`-- BẮT ĐẦU TRANSACTION ĐẶT HÀNG #${newOrder.id}\nSTART TRANSACTION;\n` +
                    state.cart.map(c => `UPDATE products SET stock = stock - ${c.quantity} WHERE id = ${c.id} AND stock >= ${c.quantity};`).join('\n') + 
-                   `\nINSERT INTO orders (id, customer_name, phone, province, district, ward, address_detail, total_amount, payment_method, status) VALUES (${newOrder.id}, '${newOrder.customer}', '${newOrder.phone}', '${newOrder.province}', '${newOrder.district}', '${newOrder.ward}', '${escapeHtml(streetAddress)}', ${newOrder.total}, '${newOrder.paymentMethod}', 'Chờ xác nhận');\nCOMMIT;`);
+                   `\nINSERT INTO orders (id, customer_name, phone, address, total_amount, payment_method, status) VALUES (${newOrder.id}, '${newOrder.customer}', '${newOrder.phone}', '${escapeHtml(fullAddress)}', ${newOrder.total}, '${newOrder.paymentMethod}', 'Chờ xác nhận');\nCOMMIT;`);
 
             state.orders.unshift(newOrder);
             state.cart = [];
@@ -1412,7 +1350,7 @@
                 `;
             }
 
-            // 4. TRANG CHECKOUT (ĐẶT HÀNG - XÁC THỰC ĐỊA CHỈ 3 CẤP & BẢO VỆ CHỐNG SPAM)
+            // 4. TRANG CHECKOUT (ĐẶT HÀNG - KHÁCH HÀNG TỰ NHẬP ĐỊA CHỈ & HỆ THỐNG KIỂM TRA CHỐNG SPAM)
             else if (state.currentPage === 'checkout') {
                 const { subtotal, discount, shipping, total } = calculateOrderTotals();
 
@@ -1420,9 +1358,9 @@
                     <div class="container my-5">
                         <div class="row g-5">
                             <div class="col-md-7">
-                                <h4 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-warning me-2"></i>Thông tin giao nhận hàng chuẩn xác</h4>
+                                <h4 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-warning me-2"></i>Thông tin nhận hàng & Địa chỉ giao</h4>
                                 <div class="alert alert-secondary py-2 small mb-4">
-                                    <i class="bi bi-shield-check text-success me-1"></i> Hệ thống đã kích hoạt <strong>Bộ lọc chống spam đơn ảo</strong> và <strong>Chuẩn hóa địa chỉ hành chính 3 cấp</strong>.
+                                    <i class="bi bi-shield-check text-success me-1"></i> Hệ thống đã kích hoạt <strong>Bộ lọc chống spam đơn ảo</strong> và <strong>Kiểm tra địa chỉ giao hàng hợp lệ</strong>.
                                 </div>
 
                                 <form id="checkoutForm" onsubmit="handleCheckout(event)">
@@ -1446,35 +1384,13 @@
                                         </div>
                                     </div>
 
-                                    <!-- CHUẨN HÓA ĐỊA CHỈ 3 CẤP -->
-                                    <div class="card p-3 mb-3 bg-light border-0">
-                                        <label class="form-label fw-bold small text-primary"><i class="bi bi-map me-1"></i>Chọn địa chỉ hành chính chính xác:</label>
-                                        <div class="row g-2 mb-2">
-                                            <div class="col-md-4">
-                                                <label class="form-label small">Tỉnh / Thành phố *</label>
-                                                <select id="provinceSelect" name="province" class="form-select form-select-sm" required onchange="handleProvinceChange(event)">
-                                                    <option value="">-- Chọn Tỉnh / TP --</option>
-                                                    ${Object.keys(VN_ADDRESS_DATA).map(p => `<option value="${p}">${p}</option>`).join('')}
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label small">Quận / Huyện *</label>
-                                                <select id="districtSelect" name="district" class="form-select form-select-sm" required disabled onchange="handleDistrictChange(event)">
-                                                    <option value="">-- Chọn Quận / Huyện --</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label class="form-label small">Phường / Xã *</label>
-                                                <select id="wardSelect" name="ward" class="form-select form-select-sm" required disabled>
-                                                    <option value="">-- Chọn Phường / Xã --</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-2">
-                                            <label class="form-label small">Số nhà, ngõ/ngách, tên đường *</label>
-                                            <input type="text" name="street_address" class="form-control form-control-sm" required placeholder="Ví dụ: Số 25, ngõ 68 đường Cầu Giấy">
-                                        </div>
+                                    <!-- ĐỊA CHỈ KHÁCH HÀNG TỰ NHẬP CHỮ TRỰC TIẾP -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold">Địa chỉ nhận hàng chi tiết *</label>
+                                        <textarea name="address" class="form-control" rows="3" required placeholder="Ví dụ: Số 12, ngõ 86 đường Cầu Giấy, Phường Quan Hoa, Quận Cầu Giấy, Hà Nội"></textarea>
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle me-1"></i> Khách hàng vui lòng nhập đầy đủ: <strong>Số nhà, tên đường/ngõ, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố</strong> để bưu tá giao chính xác.
+                                        </small>
                                     </div>
 
                                     <div class="mb-3">
@@ -1578,7 +1494,7 @@
                                             <th>Mã đơn</th>
                                             <th>Thời gian đặt</th>
                                             <th>Khách nhận</th>
-                                            <th>Địa chỉ nhận hàng</th>
+                                            <th>Địa chỉ giao hàng</th>
                                             <th>Hình thức TT</th>
                                             <th>Tổng tiền</th>
                                             <th>Trạng thái</th>
@@ -1792,7 +1708,7 @@
                                         <tr>
                                             <th>Mã</th>
                                             <th>Khách hàng</th>
-                                            <th>Địa chỉ nhận hàng (Đã chuẩn hóa)</th>
+                                            <th>Địa chỉ nhận hàng (Khách tự nhập)</th>
                                             <th>Tổng tiền</th>
                                             <th>Trạng thái hiện tại</th>
                                             <th style="min-width: 200px;">Đổi trạng thái</th>
